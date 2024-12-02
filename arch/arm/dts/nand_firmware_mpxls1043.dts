@@ -1,0 +1,32 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+    #size-cells = <1>;
+
+	binman {
+		filename = "./nand_firmware.img";
+		pad-byte = <0xff>;
+		rcw {
+			filename = "./bl2_qspi.pbl";
+			offset = <0x0>;
+		};
+		uboot_nand {
+			filename = "./fip.bin";
+			offset = <0x100000>;
+		};
+		fman {
+			filename = "./fman_ucode.bin";
+			offset = <0x900000>;
+		};
+		qe {
+			filename = "./qe_ucode.bin";
+			offset = <0x940000>;
+		};
+	};
+};

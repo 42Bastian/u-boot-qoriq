@@ -101,7 +101,7 @@ static struct mm_region early_map[] = {
 	},
 	{ CONFIG_SYS_FSL_QSPI_BASE1, CONFIG_SYS_FSL_QSPI_BASE1,
 	  CONFIG_SYS_FSL_QSPI_SIZE1,
-	  PTE_BLOCK_MEMTYPE(MT_NORMAL) | PTE_BLOCK_NON_SHARE},
+	  PTE_BLOCK_MEMTYPE(MT_DEVICE_NGNRNE) | PTE_BLOCK_NON_SHARE},
 #ifdef CONFIG_FSL_IFC
 	/* For IFC Region #1, only the first 4MB is cache-enabled */
 	{ CONFIG_SYS_FSL_IFC_BASE1, CONFIG_SYS_FSL_IFC_BASE1,
@@ -819,6 +819,7 @@ int mmc_get_env_dev(void)
 }
 #endif
 
+#ifndef CONFIG_ENV_IS_IN_EEPROM
 enum env_location env_get_location(enum env_operation op, int prio)
 {
 	enum boot_src src = get_boot_src();
@@ -860,6 +861,8 @@ enum env_location env_get_location(enum env_operation op, int prio)
 
 	return env_loc;
 }
+#endif
+
 #endif	/* CONFIG_TFABOOT */
 
 u32 initiator_type(u32 cluster, int init_id)

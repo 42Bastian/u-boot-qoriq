@@ -8,7 +8,9 @@
 #include <asm/arch/fsl_serdes.h>
 #include <pci.h>
 #include <asm/global_data.h>
+#include <linux/delay.h>
 #include <asm/io.h>
+#include <env.h>
 #include <errno.h>
 #include <malloc.h>
 #include <dm.h>

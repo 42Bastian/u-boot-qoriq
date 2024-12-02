@@ -454,6 +454,7 @@ dtb-$(CONFIG_FSL_LSCH3) += fsl-ls2080a-qds.dtb \
 	fsl-ls1028a-rdb.dtb \
 	fsl-ls1028a-qds-duart.dtb \
 	fsl-ls1028a-qds-lpuart.dtb \
+	        mpxls1088.dtb \
 	fsl-lx2160a-rdb.dtb \
 	fsl-lx2160a-qds.dtb \
 	fsl-lx2160a-qds-3-x-x.dtb \
@@ -469,19 +470,33 @@ dtb-$(CONFIG_FSL_LSCH3) += fsl-ls2080a-qds.dtb \
 	fsl-lx2162a-qds.dtb\
 	fsl-lx2162a-qds-17-x.dtb\
 	fsl-lx2162a-qds-18-x.dtb\
-	fsl-lx2162a-qds-20-x.dtb
+	fsl-lx2162a-qds-20-x.dtb\
+	mpxlx2160a-crx08.dtb \
+	mpxls1028.dtb \
+	qspi_firmware_mpxls1088.dtb \
+	xspi_firmware_mpxls1028.dtb \
+	xspi_firmware_mpxlx2160_crx08.dtb \
+	dpc-usxgmii.crx08.dtb \
+	dpl-eth.19.dtb
 dtb-$(CONFIG_FSL_LSCH2) += fsl-ls1043a-qds-duart.dtb \
 	fsl-ls1043a-qds-lpuart.dtb \
 	fsl-ls1043a-rdb.dtb \
+	mpxls1043.dtb \
+	mpxls1043-2nand.dtb \
 	fsl-ls1046a-qds-duart.dtb \
 	fsl-ls1046a-qds-lpuart.dtb \
 	fsl-ls1046a-rdb.dtb \
 	fsl-ls1046a-frwy.dtb \
+	mpxls1046.dtb \
+	comels1046a.dtb \
 	fsl-ls1012a-qds.dtb \
 	fsl-ls1012a-rdb.dtb \
 	fsl-ls1012a-2g5rdb.dtb \
 	fsl-ls1012a-frdm.dtb \
-	fsl-ls1012a-frwy.dtb
+	fsl-ls1012a-frwy.dtb \
+	qspi_firmware_mpxls1046.dtb \
+	qspi_firmware_mpxls1043.dtb \
+	nand_firmware_mpxls1043.dtb
 dtb-$(CONFIG_TARGET_SL28) += fsl-ls1028a-kontron-sl28.dtb \
 	fsl-ls1028a-kontron-sl28-var1.dtb \
 	fsl-ls1028a-kontron-sl28-var2.dtb \

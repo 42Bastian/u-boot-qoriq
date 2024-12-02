@@ -12,6 +12,10 @@
 #include <fsl_memac.h>
 #include <fm_eth.h>
 
+#ifdef CONFIG_FSL_MC_ENET
+#include <fsl-mc/ldpaa_wriop.h>
+#endif
+
 #ifdef CONFIG_SYS_MEMAC_LITTLE_ENDIAN
 #define memac_out_32(a, v)	out_le32(a, v)
 #define memac_clrbits_32(a, v)	clrbits_le32(a, v)
@@ -222,6 +226,40 @@ int fm_memac_mdio_init(struct bd_info *bis, struct memac_mdio_info *info)
 
 	bus->priv = info->regs;
 
+#if defined(CONFIG_CARRIER_CRX06) || defined(CONFIG_CARRIER_CRX08)
+
+#ifdef CONFIG_FSL_MC_ENET
+	if (strncmp(DEFAULT_WRIOP_MDIO2_NAME, info->name, MDIO_NAME_LEN) == 0)
+#else
+	if (strncmp(DEFAULT_FM_TGEC_MDIO_NAME, info->name, MDIO_NAME_LEN) == 0)
+#endif
+	{
+		memac_setbits_32(
+				&((struct memac_mdio_controller *)info->regs)->mdio_stat,
+#if defined(CONFIG_CARRIER_CRX08)
+				MDIO_STAT_CLKDIV(60) | MDIO_STAT_NEG);
+#else
+				MDIO_STAT_CLKDIV(40) | MDIO_STAT_NEG);
+#endif
+		// printf("CLKDIV(40) for %s\n",info->name);
+	}
+	else {
+		const int reg = memac_in_32(&((struct memac_mdio_controller *)info->regs)->mdio_stat);
+		if (((reg>>7) & 0x1ff) != 0x28) {
+			memac_setbits_32(
+				&((struct memac_mdio_controller *)info->regs)->mdio_stat,
+					MDIO_STAT_CLKDIV(258) | MDIO_STAT_NEG);
+			// printf("CLKDIV(258) for %s\n",info->name);
+		}
+	}
+
+#else
+
+	const int reg = memac_in_32(&((struct memac_mdio_controller *)info->regs)->mdio_stat);
+
+	if (((reg>>7) & 0x1ff) != 0x28) {
+
+
 	/*
 	 * On some platforms like B4860, default value of MDIO_CLK_DIV bits
 	 * in mdio_stat(mdio_cfg) register generates MDIO clock too high
@@ -237,6 +275,9 @@ int fm_memac_mdio_init(struct bd_info *bis, struct memac_mdio_info *info)
 	memac_setbits_32(
 		&((struct memac_mdio_controller *)info->regs)->mdio_stat,
 		MDIO_STAT_CLKDIV(258) | MDIO_STAT_NEG);
+
+	}
+#endif
 
 	return mdio_register(bus);
 }

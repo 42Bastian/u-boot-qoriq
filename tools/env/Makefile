@@ -8,6 +8,13 @@
 # with "CC" here for the maximum code reuse of scripts/Makefile.host.
 override HOSTCC = $(CC)
 
+# Add sysroot path
+# The variable SDKTARGETSYSROOT is set when using Yocto as cross-development
+# toolchain.
+ifneq ($(SDKTARGETSYSROOT),)
+override HOSTCC += --sysroot=$(SDKTARGETSYSROOT)
+endif
+
 # Compile for a hosted environment on the target
 HOST_EXTRACFLAGS  = -I$(srctree)/tools \
 		$(patsubst -I%,-idirafter%, $(filter -I%, $(UBOOTINCLUDE))) \

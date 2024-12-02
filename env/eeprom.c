@@ -18,6 +18,9 @@
 #if defined(CONFIG_I2C_ENV_EEPROM_BUS)
 #include <i2c.h>
 #endif
+#ifdef CONFIG_DM_I2C
+#include <i2c_eeprom.h>
+#endif
 #include <search.h>
 #include <errno.h>
 #include <linux/compiler.h>	/* for BUG_ON */
@@ -28,6 +31,9 @@ static int eeprom_bus_read(unsigned dev_addr, unsigned offset,
 			   uchar *buffer, unsigned cnt)
 {
 	int rcode;
+
+#ifndef CONFIG_DM_I2C
+    unsigned int cur_speed;
 #if defined(CONFIG_I2C_ENV_EEPROM_BUS)
 	int old_bus = i2c_get_bus_num();
 
@@ -35,10 +41,26 @@ static int eeprom_bus_read(unsigned dev_addr, unsigned offset,
 		i2c_set_bus_num(CONFIG_I2C_ENV_EEPROM_BUS);
 #endif
 
-	rcode = eeprom_read(dev_addr, offset, buffer, cnt);
+    cur_speed = i2c_get_bus_speed();
+
+    if (cur_speed != EEPROM_I2C_SPEED)
+        i2c_set_bus_speed(EEPROM_I2C_SPEED);
+
+    rcode = eeprom_read(dev_addr, offset, buffer, cnt);
+
+    if (cur_speed != EEPROM_I2C_SPEED)
+        i2c_set_bus_speed(cur_speed);
 
 #if defined(CONFIG_I2C_ENV_EEPROM_BUS)
-	i2c_set_bus_num(old_bus);
+    if (old_bus != CONFIG_I2C_ENV_EEPROM_BUS)
+        i2c_set_bus_num(old_bus);
+#endif
+#else
+    struct udevice *dev;
+    rcode = i2c_get_chip_for_busnum(CONFIG_I2C_ENV_EEPROM_BUS,
+            dev_addr, CONFIG_SYS_I2C_EEPROM_ADDR_LEN, &dev);
+    if (!rcode)
+        rcode = i2c_eeprom_read(dev, offset, buffer, cnt);
 #endif
 
 	return rcode;
@@ -48,6 +70,9 @@ static int eeprom_bus_write(unsigned dev_addr, unsigned offset,
 			    uchar *buffer, unsigned cnt)
 {
 	int rcode;
+
+#ifndef CONFIG_DM_I2C
+	unsigned int cur_speed;
 #if defined(CONFIG_I2C_ENV_EEPROM_BUS)
 	int old_bus = i2c_get_bus_num();
 
@@ -55,10 +80,26 @@ static int eeprom_bus_write(unsigned dev_addr, unsigned offset,
 		i2c_set_bus_num(CONFIG_I2C_ENV_EEPROM_BUS);
 #endif
 
-	rcode = eeprom_write(dev_addr, offset, buffer, cnt);
+    cur_speed = i2c_get_bus_speed();
+
+    if (cur_speed != EEPROM_I2C_SPEED)
+        i2c_set_bus_speed(EEPROM_I2C_SPEED);
+
+    rcode = eeprom_write(dev_addr, offset, buffer, cnt);
+
+    if (cur_speed != EEPROM_I2C_SPEED)
+        i2c_set_bus_speed(cur_speed);
 
 #if defined(CONFIG_I2C_ENV_EEPROM_BUS)
-	i2c_set_bus_num(old_bus);
+    if (old_bus != CONFIG_I2C_ENV_EEPROM_BUS)
+        i2c_set_bus_num(old_bus);
+#endif
+#else
+    struct udevice *dev;
+    rcode = i2c_get_chip_for_busnum(CONFIG_I2C_ENV_EEPROM_BUS,
+            dev_addr, CONFIG_SYS_I2C_EEPROM_ADDR_LEN, &dev);
+    if (!rcode)
+        rcode = i2c_eeprom_write(dev, offset, buffer, cnt);
 #endif
 
 	return rcode;
@@ -68,6 +109,7 @@ static int env_eeprom_load(void)
 {
 	char buf_env[CONFIG_ENV_SIZE];
 	unsigned int off = env_get_offset(CONFIG_ENV_OFFSET);
+	int rc;
 
 #ifdef CONFIG_ENV_OFFSET_REDUND
 	ulong len, crc[2], crc_tmp;
@@ -131,7 +173,7 @@ static int env_eeprom_load(void)
 			gd->env_valid = ENV_VALID;
 	}
 
-#else /* CONFIG_ENV_OFFSET_REDUND */
+#elif 0 /* CONFIG_ENV_OFFSET_REDUND */
 	ulong crc, len, new;
 	uchar rdbuf[64];
 
@@ -171,7 +213,12 @@ static int env_eeprom_load(void)
 	eeprom_bus_read(CONFIG_SYS_I2C_EEPROM_ADDR,
 		off, (uchar *)buf_env, CONFIG_ENV_SIZE);
 
-	return env_import(buf_env, 1, H_EXTERNAL);
+	rc = env_import(buf_env, 1, H_EXTERNAL);
+
+	if (rc == 0) gd->env_valid = ENV_VALID;
+	else gd->env_valid = ENV_INVALID;
+
+	return rc;
 }
 
 static int env_eeprom_save(void)

@@ -1,0 +1,130 @@
+/*
+ * Device Tree Include file for Freescale Layerscape-1046A family SoC.
+ *
+ * Copyright 2016, Freescale Semiconductor
+ * Copyright (C) 2019-2021 MicroSys Electronics GmbH
+ *
+ * Mingkai Hu <Mingkai.hu@freescale.com>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2.  This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+/dts-v1/;
+/include/ "fsl-ls1046a.dtsi"
+
+/ {
+	model = "MPXLS1046 Board";
+
+	aliases {
+		spi0 = &qspi;
+	};
+
+};
+
+&soc {
+		gpio0: gpio@2300000 {
+			compatible = "fsl,fsl,pq3-gpio";
+			reg = <0x0 0x2300000 0x0 0x10000>;
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+
+		gpio1: gpio@2310000 {
+			compatible = "fsl,fsl,pq3-gpio";
+			reg = <0x0 0x2310000 0x0 0x10000>;
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+
+		gpio2: gpio@2320000 {
+			compatible = "fsl,fsl,pq3-gpio";
+			reg = <0x0 0x2320000 0x0 0x10000>;
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+
+		gpio3: gpio@2330000 {
+			compatible = "fsl,fsl,pq3-gpio";
+			reg = <0x0 0x2330000 0x0 0x10000>;
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+};
+
+&qspi {
+	bus-num = <0>;
+	status = "okay";
+
+	qflash0: n25q128a11@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <50000000>;
+		reg = <0>;
+	};
+};
+
+&sata {
+	status = "okay";
+};
+
+&usb0 {
+	status = "okay";
+};
+
+&usb1 {
+	status = "okay";
+};
+
+&usb2 {
+	status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+    u-boot,dm-pre-reloc;
+
+    tmp451: temp@4c {
+        compatible = "ti,tmp451";
+        reg = <0x4c>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    rx8581: rtc@32 {
+		compatible = "epson,rx8581";
+		reg = <0x32>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    at24c128: eeprom@54 {
+        compatible = "atmel,24c128";
+        reg = <0x50>;
+        u-boot,i2c-offset-len = <2>; /* two address bytes */
+        write-page-size = <64>;
+        page-write-delay = <5000>; /* 5ms delay when writing */
+        max-speed = <400000>;
+    };
+
+   eeprom@57 {
+	compatible = "at24,24c128";
+	reg = <0x57>;
+	u-boot,i2c-offset-len = <2>; /* two address bytes */
+	write-page-size = <64>;
+	page-write-delay = <5000>; /* 5ms delay when writing */
+        max-speed = <400000>;
+};
+
+};
+&i2c1 {
+	status = "okay";
+};
+
+&pcie1 {
+	status = "okay";
+};
+
+&pcie2 {
+	status = "okay";
+};

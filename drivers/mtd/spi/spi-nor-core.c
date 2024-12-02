@@ -799,6 +799,49 @@ static int spi_nor_wait_till_ready(struct spi_nor *nor)
 						    DEFAULT_READY_WAIT_JIFFIES);
 }
 
+#ifdef CONFIG_SPI_FLASH_STMICRO
+
+static int micron_quad_enable(struct spi_nor *nor)
+{
+	int ret;
+	u8 val;
+
+	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
+	if (ret < 0) {
+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
+		return ret;
+	}
+	write_enable(nor);
+
+	/* set EVCR ,enable quad I/O */
+	nor->cmd_buf[0] = val & ~EVCR_QUAD_EN_MICRON;
+	ret = nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1);
+	if (ret < 0) {
+		dev_err(nor->dev,
+			"error while writing EVCR register\n");
+		return ret;
+	}
+
+	ret = spi_nor_wait_till_ready(nor);
+	if (ret)
+		return ret;
+
+	/* read EVCR and check it */
+	ret = nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
+	if (ret < 0) {
+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
+		return ret;
+	}
+	if (val & EVCR_QUAD_EN_MICRON) {
+		dev_err(nor->dev, "Micron EVCR Quad bit not clear, val=%u\n",val);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+#endif
+
 #ifdef CONFIG_SPI_FLASH_BAR
 /*
  * This "clean_bar" is necessary in a situation when one was accessing
@@ -2730,6 +2773,9 @@ static int spi_nor_init_params(struct spi_nor *nor,
 #endif
 		case SNOR_MFR_ST:
 		case SNOR_MFR_MICRON:
+#if defined(CONFIG_SPI_FLASH_STMICRO)
+		params->quad_enable = micron_quad_enable;
+#endif
 			break;
 
 		default:

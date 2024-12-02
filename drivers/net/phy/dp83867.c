@@ -107,6 +107,13 @@
 
 /* SGMIICTL bits */
 #define DP83867_SGMII_TYPE			BIT(14)
+#define DP83867_STRAP_MIRROR_EN BIT(15)
+
+/*
+ * RX/TX delay in pico-seconds and in steps of
+ * 250ps. The range is from 250ps to 4000ps.
+ */
+#define RXTX_DELAY_PS(PS) ((((PS)/250)-1)&0xf)
 
 enum {
 	DP83867_PORT_MIRRORING_KEEP,
@@ -259,6 +266,8 @@ static int dp83867_of_init(struct phy_device *phydev)
 	dp83867->fifo_depth = DEFAULT_FIFO_DEPTH;
 	dp83867->io_impedance = -EINVAL;
 
+	dp83867->rxctrl_strap_quirk = true;
+
 	return 0;
 }
 #endif
@@ -284,12 +293,28 @@ static int dp83867_config(struct phy_device *phydev)
 	if (dp83867->rxctrl_strap_quirk) {
 		val = phy_read_mmd(phydev, DP83867_DEVADDR,
 				   DP83867_CFG4);
-		val &= ~BIT(7);
-		phy_write_mmd(phydev, DP83867_DEVADDR,
-			      DP83867_CFG4, val);
+		if (val & BIT(7)) {
+		    val &= ~BIT(7);
+		    phy_write_mmd(phydev, DP83867_DEVADDR,
+		            DP83867_CFG4, val);
+		}
 	}
 
 	if (phy_interface_is_rgmii(phydev)) {
+
+#ifdef CONFIG_TARGET_COMELS1046A
+		val = phy_read_mmd(phydev, DP83867_DEVADDR, DP83867_STRAP_STS2);
+
+		dp83867->rx_id_delay = val & 0x7;
+		dp83867->tx_id_delay = (val>>4) & 0x7;
+
+		if (dp83867->rx_id_delay < RXTX_DELAY_PS(1500))
+		    dp83867->rx_id_delay = RXTX_DELAY_PS(1500);
+
+		if (dp83867->tx_id_delay < RXTX_DELAY_PS(1500))
+		    dp83867->tx_id_delay = RXTX_DELAY_PS(1500);
+#endif
+
 		val = phy_read(phydev, MDIO_DEVAD_NONE, MII_DP83867_PHYCTRL);
 		if (val < 0)
 			goto err_out;
@@ -309,9 +334,16 @@ static int dp83867_config(struct phy_device *phydev)
 		 * register's bit 11 (marked as RESERVED).
 		 */
 
-		bs = phy_read_mmd(phydev, DP83867_DEVADDR, DP83867_STRAP_STS1);
-		if (bs & DP83867_STRAP_STS1_RESERVED)
+		bs = phy_read_mmd(phydev, DP83867_DEVADDR,
+				  DP83867_STRAP_STS1);
+
+		if (bs & DP83867_STRAP_MIRROR_EN)
+		    dp83867->port_mirroring = DP83867_PORT_MIRRORING_EN;
+
+		if (bs & DP83867_STRAP_STS1_RESERVED) {
+            val = phy_read(phydev, MDIO_DEVAD_NONE, MII_DP83867_PHYCTRL);
 			val &= ~DP83867_PHYCR_RESERVED_MASK;
+		}
 
 		ret = phy_write(phydev, MDIO_DEVAD_NONE,
 				MII_DP83867_PHYCTRL, val);
@@ -330,6 +362,11 @@ static int dp83867_config(struct phy_device *phydev)
 
 		if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID)
 			val |= DP83867_RGMII_RX_CLK_DELAY_EN;
+
+#ifdef CONFIG_TARGET_COMELS1046A
+		val |= (DP83867_RGMII_TX_CLK_DELAY_EN |
+		        DP83867_RGMII_RX_CLK_DELAY_EN);
+#endif
 
 		phy_write_mmd(phydev, DP83867_DEVADDR, DP83867_RGMIICTL, val);
 

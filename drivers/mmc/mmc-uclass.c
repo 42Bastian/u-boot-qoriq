@@ -270,6 +270,14 @@ int mmc_of_parse(struct udevice *dev, struct mmc_config *cfg)
 				    MMC_MODE_HS400 | MMC_MODE_HS400_ES);
 	}
 
+    if (dev_read_bool(dev, "no-sd-highspeed")) {
+        cfg->host_caps &= ~(MMC_CAP(SD_HS) | MMC_MODE_HS_52MHz | MMC_MODE_DDR_52MHz);
+    }
+
+    if (dev_read_bool(dev, "no-mmc-highspeed")) {
+        cfg->host_caps &= ~(MMC_CAP(MMC_HS) | MMC_MODE_HS_52MHz | MMC_MODE_DDR_52MHz);
+    }
+
 	return 0;
 }
 

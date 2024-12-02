@@ -199,6 +199,45 @@ config RTC_ABX80X
 	  families of ultra-low-power  battery- and capacitor-backed real-time
 	  clock chips.
 
+config RTC_M41T62
+	bool "Enable M41T62 driver"
+	help
+	  Enable driver for ST's M41T62 compatible RTC devices (like RV-4162).
+	  It is a serial (I2C) real-time clock (RTC) with alarm.
+
+config RTC_STM32
+	bool "Enable STM32 RTC driver"
+	depends on DM_RTC
+	help
+	  Enable STM32 RTC driver. This driver supports the rtc that is present
+	  on some STM32 SoCs.
+
+config RTC_ABX80X
+	bool "Enable Abracon ABx80x RTC driver"
+	depends on DM_RTC
+	help
+	  If you say yes here you get support for Abracon AB080X and AB180X
+	  families of ultra-low-power  battery- and capacitor-backed real-time
+	  clock chips.
+
+config RTC_PCF85263
+	bool "Enable PCF85263 driver"
+	depends on DM_RTC
+	help
+	  Support for Driver for the NXP PCF85263 RTC.
+
+config RTC_PCF85063
+	bool "Enable PCF85063 driver"
+	depends on DM_RTC
+	help
+	  Support for Driver for the NXP PCF85063 RTC.
+
+config RTC_RV8564
+    bool "Enable RV8564 driver"
+    depends on DM_RTC
+    help
+      Support for Driver for the Micro Crystal RV-8564 RTC.
+
 config RTC_DAVINCI
 	bool "Enable TI OMAP RTC driver"
 	depends on ARCH_DAVINCI || ARCH_OMAP2PLUS

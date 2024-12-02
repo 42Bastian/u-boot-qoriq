@@ -2082,6 +2082,15 @@ static int mmc_select_mode_and_width(struct mmc *mmc, uint card_caps)
 		return 0;
 	}
 
+#if defined (CONFIG_TARGET_MPXLS1046) || defined (CONFIG_TARGET_MPXLS1043) || defined (CONFIG_TARGET_MPXLS1088)
+	/*
+	 * Disable SD high speed capability. This would lead to a
+	 * speed of 50MHz on SDHC bus, which is not supported on
+	 * CRX05/CRX06.
+	 */
+	mmc->host_caps &= ~MMC_CAP(SD_HS);
+#endif
+
 	/* Restrict card's capabilities by what the host can do */
 	card_caps &= mmc->host_caps;
 

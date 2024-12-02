@@ -316,7 +316,7 @@
 	((((ins) << INSTR_SHIFT) | ((pad) << PAD_SHIFT) | \
 	(opr)) << (((idx) % 2) * OPRND_SHIFT))
 
-#define POLL_TOUT		5000
+#define POLL_TOUT		50000
 #define NXP_FSPI_MAX_CHIPSELECT		4
 
 /* Access flash memory using IP bus only */
@@ -522,7 +522,7 @@ static void nxp_fspi_prepare_lut(struct nxp_fspi *f,
 				 const struct spi_mem_op *op)
 {
 	void __iomem *base = f->iobase;
-	u32 lutval[4] = {};
+	u32 lutval[4] = {0,0,0,0};
 	int lutidx = 1, i;
 
 	/* cmd */
@@ -680,6 +680,9 @@ static void nxp_fspi_select_mem(struct nxp_fspi *f, int chip_select)
 static void nxp_fspi_read_ahb(struct nxp_fspi *f, const struct spi_mem_op *op)
 {
 	u32 len = op->data.nbytes;
+
+	/* Need a delay before reading the data */
+	udelay(250);    // 150 is not enough. 180 works. 250 to be on the safe side
 
 	/* Read out the data directly from the AHB buffer. */
 	memcpy_fromio(op->data.buf.in, (f->ahb_addr + op->addr.val), len);
@@ -870,7 +873,7 @@ static int nxp_fspi_exec_op(struct spi_slave *slave,
 	struct udevice *bus;
 	int err = 0;
 	u32 reg;
-
+	unsigned int nbytes;
 
 	bus = slave->dev->parent;
 	f = dev_get_priv(bus);
@@ -893,7 +896,8 @@ static int nxp_fspi_exec_op(struct spi_slave *slave,
 	 * to access the flash. Read via AHB bus may be corrupted due to
 	 * existence of an errata and therefore discard AHB read in such cases.
 	 */
-	if (op->data.nbytes > (f->devtype_data->rxfifo - 4) &&
+	nbytes = (f->devtype_data->rxfifo - 4) > 8 ? 8 : (f->devtype_data->rxfifo - 4);
+	if (op->data.nbytes > nbytes &&
 	    op->data.dir == SPI_MEM_DATA_IN &&
 	    !needs_ip_only(f)) {
 		nxp_fspi_read_ahb(f, op);
@@ -1066,6 +1070,9 @@ static int nxp_fspi_default_setup(struct nxp_fspi *f)
 	fspi_writel(f, SEQID_AHB_LUT, base + FSPI_FLSHA2CR2);
 	fspi_writel(f, SEQID_AHB_LUT, base + FSPI_FLSHB1CR2);
 	fspi_writel(f, SEQID_AHB_LUT, base + FSPI_FLSHB2CR2);
+
+	/* Delay 20msec to get clock synced */
+	udelay(20000);
 
 	return 0;
 }

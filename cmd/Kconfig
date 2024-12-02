@@ -1857,6 +1857,12 @@ config CMD_SYSBOOT
 	help
 	  Boot image via local extlinux.conf file
 
+config CMD_UPDATE_FIRMWARE_IMAGE
+	bool "Update Firmware Image"
+	select MENU
+	help
+	  Update QSPI or NAND with U-Boot, FMAN Microcode and Security Firmware
+
 config CMD_QFW
 	bool "qfw"
 	select QFW

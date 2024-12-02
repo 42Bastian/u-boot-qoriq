@@ -1,0 +1,39 @@
+if TARGET_MPXLX2160A
+
+config SYS_BOARD
+	default "mpxlx2160a"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_SOC
+	default "fsl-layerscape"
+
+config SYS_CONFIG_NAME
+	default "mpxlx2160a"
+
+if CARRIER_CRX08
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "mpxlx2160a-crx08"
+endif
+
+config QSFP_EEPROM
+        bool "Support for reading QSFP+ transceiver eeprom"
+        default y if PHY_CORTINA
+        help
+         This option enables the functionality for reading
+         QSFP+ cable eeprom. It can be used when PHYs are
+         requiring different initialization based on cable
+         type.
+
+config SYS_FSL_USE_USXGMII
+        bool "Use USXGMII protocol"
+        default y if CARRIER_CRX08
+        help
+         The 10Gbit-Ethernet Serdes is XFI or USXGMII protocol.
+         This option selects USXGMII protocol for the ports.
+         Not selected is standard XFI protocol.
+
+source "board/freescale/common/Kconfig"
+endif

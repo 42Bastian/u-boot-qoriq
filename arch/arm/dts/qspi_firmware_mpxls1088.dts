@@ -1,0 +1,36 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+    #size-cells = <1>;
+
+	binman {
+		filename = "./qspi_firmware.img";
+		pad-byte = <0xff>;
+		rcw {
+			filename = "./bl2_qspi.pbl";
+			offset = <0x0>;
+		};
+		uboot_qspi {
+			filename = "./fip.bin";
+			offset = <0x100000>;
+		};
+		mc {
+			filename = "./mc.itb";
+			offset = <0xa00000>;
+		};
+		dpl {
+			filename = "./dpl-eth-crx05.0x12_0x0D.dtb";
+			offset = <0xd00000>;
+		};
+		dpc {
+			filename = "./dpc-crx05.0x12-0x0D.dtb";
+			offset = <0xe00000>;
+		};
+	};
+};

@@ -55,7 +55,7 @@ obj-$(CONFIG_CMD_ADTIMG) += adtimg.o
 obj-$(CONFIG_CMD_ABOOTIMG) += abootimg.o
 obj-$(CONFIG_CMD_EXTENSION) += extension_board.o
 obj-$(CONFIG_CMD_ECHO) += echo.o
-obj-$(CONFIG_ENV_IS_IN_EEPROM) += eeprom.o
+#obj-$(CONFIG_ENV_IS_IN_EEPROM) += eeprom.o
 obj-$(CONFIG_CMD_EEPROM) += eeprom.o
 obj-$(CONFIG_EFI) += efi.o
 obj-$(CONFIG_CMD_EFIDEBUG) += efidebug.o
@@ -115,6 +115,7 @@ obj-$(CONFIG_CMD_ONENAND) += onenand.o
 obj-$(CONFIG_CMD_OSD) += osd.o
 obj-$(CONFIG_CMD_PART) += part.o
 obj-$(CONFIG_CMD_PCAP) += pcap.o
+obj-$(CONFIG_CMD_UPDATE_FIRMWARE_IMAGE) += updatefirmwareimage.o
 ifdef CONFIG_PCI
 obj-$(CONFIG_CMD_PCI) += pci.o
 endif

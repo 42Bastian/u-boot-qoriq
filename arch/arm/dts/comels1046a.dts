@@ -1,0 +1,170 @@
+/*
+ * Device Tree Include file for Freescale Layerscape-1046A family SoC.
+ *
+ * Copyright 2016, Freescale Semiconductor
+ *
+ * Mingkai Hu <Mingkai.hu@freescale.com>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2.  This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+/*
+ * Copyright (C) 2020-2021 MicroSys Electronics GmbH
+ * Kay Potthoff <kay.potthoff@microsys.de>
+ */
+
+/dts-v1/;
+/include/ "fsl-ls1046a.dtsi"
+
+/ {
+    model = "COMe-LS1046A Board";
+
+    aliases {
+        spi0 = &qspi;
+    };
+
+};
+
+&soc {
+        gpio0: gpio@2300000 {
+            compatible = "fsl,qoriq-gpio";
+            reg = <0x0 0x2300000 0x0 0x10000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+        };
+
+        gpio1: gpio@2310000 {
+            compatible = "fsl,qoriq-gpio";
+            reg = <0x0 0x2310000 0x0 0x10000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+        };
+
+        gpio2: gpio@2320000 {
+            compatible = "fsl,qoriq-gpio";
+            reg = <0x0 0x2320000 0x0 0x10000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+        };
+
+        gpio3: gpio@2330000 {
+            compatible = "fsl,qoriq-gpio";
+            reg = <0x0 0x2330000 0x0 0x10000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+        };
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio3 {
+    status = "okay";
+};
+
+&qspi {
+    bus-num = <0>;
+    status = "okay";
+    spi-max-frequency = <50000000>;
+
+    qflash0: qflash@0 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "jedec,spi-nor";
+        reg = <0>;
+    };
+
+    qflash1: qflash@1 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "jedec,spi-nor";
+        reg = <1>;
+    };
+
+    qflash2: qflash@2 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "jedec,spi-nor";
+        reg = <2>;
+        spi-cpha;
+    };
+
+    qflash3: qflash@3 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "jedec,spi-nor";
+        reg = <3>;
+    };
+};
+
+&sata {
+    status = "okay";
+};
+
+&usb0 {
+    status = "okay";
+};
+
+&usb1 {
+    status = "okay";
+};
+
+&usb2 {
+    status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+    u-boot,dm-pre-reloc;
+
+    usbhub0: usbhub@44 { // TUSB8041
+        compatible = "ti,tusb8041";
+        reg = <0x44>;
+        u-boot,i2c-offset-len = <1>;
+    };
+
+    tmp451: temp@4c {
+        compatible = "ti,tmp451";
+        reg = <0x4c>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    rv8564: rtc@51 {
+        compatible = "microcrystal,rv8564";
+        reg = <0x51>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    user_eeprom: user_eeprom@56 { // User EEPROM
+       compatible = "atmel,24c64";
+       reg = <0x56>;
+       u-boot,i2c-offset-len = <2>; /* two address bytes */
+       write-page-size = <32>;
+       page-write-delay = <5000>; /* 5ms delay when writing */
+       max-speed = <400000>;
+    };
+
+   system_eeprom: system_eeprom@57 { // System EEPROM
+      compatible = "atmel,24c64";
+      reg = <0x57>;
+      u-boot,i2c-offset-len = <2>; /* two address bytes */
+      write-page-size = <32>;
+      page-write-delay = <5000>; /* 5ms delay when writing */
+      max-speed = <400000>;
+   };
+
+    clockgen0: clockgen@69 { // IDT6V49205
+        compatible = "nxp,idt6v49205a";
+        reg = <0x69>;
+        #clock-cells = <2>;
+    };
+
+};
+
+&i2c3 {
+    status = "okay";
+    u-boot,dm-pre-reloc;
+};

@@ -88,8 +88,8 @@ int fdt_fixup_icid_tbl(void *blob, int smmu_ph,
 			if (err)
 				return err;
 		} else {
-			printf("WARNING could not find node %s: %s.\n",
-			       tbl[i].compat, fdt_strerror(off));
+//			printf("WARNING could not find node %s: %s.\n",
+//			       tbl[i].compat, fdt_strerror(off));
 		}
 	}
 

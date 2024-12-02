@@ -4,7 +4,8 @@ menuconfig MTD_RAW_NAND
 if MTD_RAW_NAND
 
 config SYS_NAND_SELF_INIT
-	bool
+	bool "Self init"
+	default y
 	help
 	  This option, if enabled, provides more flexible and linux-like
 	  NAND initialization process.

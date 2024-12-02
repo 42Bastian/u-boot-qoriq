@@ -17,6 +17,7 @@
 
 struct i2c_eeprom_drv_data {
 	u32 size; /* size in bytes */
+	u32 pagewidth; /* pagesize = 2^pagewidth */
 	u32 pagesize; /* page size in bytes */
 	u32 addr_offset_mask; /* bits in addr used for offset overflow */
 	u32 offset_len; /* size in bytes of offset */
@@ -62,24 +63,37 @@ static int i2c_eeprom_std_read(struct udevice *dev, int offset, uint8_t *buf,
 static int i2c_eeprom_std_write(struct udevice *dev, int offset,
 				const uint8_t *buf, int size)
 {
-	struct i2c_eeprom *priv = dev_get_priv(dev);
-	int ret;
+    struct i2c_eeprom *priv = dev_get_priv(dev);
+    int err = 0;
+    uint sz = (uint) size, s;
+    const uint8_t *src = buf;
+    uint a = (uint) offset;
 
-	while (size > 0) {
-		int write_size = min_t(int, size, priv->pagesize);
+    const uint page_sz = (uint) priv->pagesize;
 
-		ret = dm_i2c_write(dev, offset, buf, write_size);
-		if (ret)
-			return ret;
+    if (size<=0 || !buf) return 0;
 
-		offset += write_size;
-		buf += write_size;
-		size -= write_size;
+    while ((err == 0) && (sz > 0)) {
+        if ((a % page_sz) != 0) {
+            s = sz < (page_sz - (a % page_sz)) ? sz : (page_sz - (a % page_sz));
+            err = dm_i2c_write(dev, a, src, s);
+            sz -= s;
+            src += s;
+            a += s;
+        } else if (sz > page_sz) {
+            err = dm_i2c_write(dev, a, src, page_sz);
+            sz -= page_sz;
+            src += page_sz;
+            a += page_sz;
+        } else {
+            err = dm_i2c_write(dev, a, src, sz);
+            sz = 0;
+        }
+        if (priv->page_write_delay > 0)
+            udelay(priv->page_write_delay);
+    }
 
-		udelay(10000);
-	}
-
-	return 0;
+    return err;
 }
 
 static int i2c_eeprom_std_size(struct udevice *dev)
@@ -103,11 +117,15 @@ static int i2c_eeprom_std_of_to_plat(struct udevice *dev)
 	u32 pagesize;
 	u32 size;
 
-	if (dev_read_u32(dev, "pagesize", &pagesize) == 0)
+	if (dev_read_u32(dev, "pagesize", &pagesize) == 0) {
 		priv->pagesize = pagesize;
-	else
+	} else {
 		/* 6 bit -> page size of up to 2^63 (should be sufficient) */
+		priv->pagewidth = data->pagewidth;
 		priv->pagesize = data->pagesize;
+	}
+
+	priv->page_write_delay = dev_read_u32_default(dev, "page-write-delay", 5000);
 
 	if (dev_read_u32(dev, "size", &size) == 0)
 		priv->size = size;

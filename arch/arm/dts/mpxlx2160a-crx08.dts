@@ -1,0 +1,224 @@
+// SPDX-License-Identifier: GPL-2.0+ OR X11
+/*
+ * MicroSys MPXLX2160A/CRX08 device tree source
+ *
+ * Author: Kay Potthoff <kay.potthoff@microsys.de>
+ *
+ * Copyright (C) 2020 MicroSys Electronics GmbH
+ *
+ */
+
+/dts-v1/;
+
+#include "fsl-lx2160a.dtsi"
+
+/ {
+	model = "MPXLX2160A/CRX08";
+	compatible = "fsl,lx2160ardb", "fsl,lx2160a";
+	aliases {
+		spi0 = &fspi;
+	};
+
+	sfp_eth0: sfp-eth0 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c6>;
+	};
+
+	sfp_eth1: sfp-eth1 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c6>;
+	};
+
+};
+
+&dpmac2 {
+	status = "okay";
+	phy-connection-type = "xlaui4";
+};
+
+&dpmac3 {
+	status = "okay";
+	phy-handle = <&usxgmii_phy1>;
+	phy-connection-type = "usxgmii";
+};
+
+&dpmac4 {
+	status = "okay";
+	phy-handle = <&usxgmii_phy2>;
+	phy-connection-type = "usxgmii";
+};
+
+&dpmac5 {
+	status = "okay";
+	phy-connection-type = "25g-aui";
+};
+
+&dpmac6 {
+	status = "okay";
+	phy-connection-type = "25g-aui";
+};
+
+&dpmac17 {
+	status = "okay";
+	phy-handle = <&rgmii_phy1>;
+	phy-connection-type = "rgmii-id";
+};
+
+&dpmac18 {
+	status = "okay";
+	phy-handle = <&rgmii_phy2>;
+	phy-connection-type = "rgmii-id";
+};
+
+&emdio1 {
+	status = "okay";
+
+	rgmii_phy1: phy@0 {
+		reg = <0>;
+	};
+	rgmii_phy2: phy@1 {
+		reg = <1>;
+	};
+};
+
+&emdio2 {
+	status = "okay";
+
+	usxgmii_phy1: phy@10 {
+		compatible = "ethernet-phy-ieee802.3-c45";
+		reg = <0x10>;
+	};
+
+	usxgmii_phy2: phy@11 {
+		compatible = "ethernet-phy-ieee802.3-c45";
+		reg = <0x11>;
+	};
+
+};
+
+&esdhc0 {
+	status = "okay";
+	bus-width = <4>;
+};
+
+&esdhc1 {
+	status = "okay";
+	bus-width = <4>;
+	mmc-hs200-1_8v;
+};
+
+&fspi {
+	status = "okay";
+
+	mt35xu512aba0: flash@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <150000000>;
+		reg = <0>;
+	};
+
+	mt35xu512aba1: flash@1 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <150000000>;
+		reg = <1>;
+	};
+};
+
+
+
+&dspi2 {
+    status = "okay";
+};
+
+&i2c0 {
+	status = "okay";
+	u-boot,dm-pre-reloc;
+	at24c128: eeprom@50 {
+		compatible = "atmel,24c128";
+		reg = <0x50>;
+	};
+
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&i2c2 {
+	status = "okay";
+};
+
+&i2c3 {
+	status = "okay";
+};
+
+&i2c4 {
+	status = "okay";
+};
+
+&i2c5 {
+	status = "okay";
+    u-boot,dm-pre-reloc;
+
+    usbhub0: usbhub@44 { // TUSB8041
+        compatible = "ti,tusb8041";
+        reg = <0x44>;
+        u-boot,i2c-offset-len = <1>;
+    };
+
+    emc2305@4d {
+		compatible = "smsc,emc2305";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x4d>;
+		fan@0 {
+			reg = <0>;
+		};
+		fan@1 {
+			reg = <1>;
+		};
+    };
+};
+
+&i2c6{
+    status = "okay";
+};
+
+&i2c7 {
+    status = "okay";
+};
+
+&sata0 {
+	status = "okay";
+};
+
+&sata1 {
+	status = "okay";
+};
+
+&sata2 {
+	status = "okay";
+};
+
+&sata3 {
+	status = "okay";
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&uart1 {
+	status = "okay";
+};
+
+&uart2 {
+	status = "okay";
+};
+
+&uart3 {
+	status = "okay";
+};

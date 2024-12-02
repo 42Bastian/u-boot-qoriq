@@ -1,0 +1,40 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+    #size-cells = <1>;
+
+	binman {
+		filename = "./xspi_firmware.img";
+		pad-byte = <0xff>;
+		rcw {
+			filename = "../atf/build/mpxlx2160acrx08/release/bl2_flexspi_nor.pbl";
+			offset = <0x0>;
+		};
+		uboot_xspi {
+			filename = "../atf/build/mpxlx2160acrx08/release/fip.bin";
+			offset = <0x100000>;
+		};
+		ddr_phy {
+			filename = "../fip_ddr_all.bin";
+			offset = <0x800000>;
+		};
+		mc {
+			filename = "../mc_10.24.0_lx2160a.itb";
+			offset = <0xa00000>;
+		};
+		dpl {
+			filename = "arch/arm/dts/dpl-eth.19.dtb";
+			offset = <0xd00000>;
+		};
+		dpc {
+			filename = "arch/arm/dts/dpc-usxgmii.crx08.dtb";
+			offset = <0xe00000>;
+		};
+	};
+};

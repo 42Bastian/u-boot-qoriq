@@ -297,6 +297,9 @@ static void enetc_start_pcs(struct udevice *dev)
 	case PHY_INTERFACE_MODE_2500BASEX:
 		enetc_init_sgmii(dev);
 		break;
+	case PHY_INTERFACE_MODE_RGMII:
+		enetc_init_rgmii(dev, priv->phy);
+		break;
 	case PHY_INTERFACE_MODE_USXGMII:
 	case PHY_INTERFACE_MODE_10GBASER:
 		enetc_init_sxgmii(dev);

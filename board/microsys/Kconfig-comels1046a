@@ -1,0 +1,95 @@
+config SYS_BOARD
+       string "Board"
+       default "comels1046a"
+
+config SYS_CONFIG_NAME
+       string "Name"
+       default "comels1046a"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "comels1046a"
+
+config RCW_VERSION
+    string "Version of RCW compiled in"
+    default "TFA"
+
+if FSL_LS_PPA
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x40400000 if SYS_LS_PPA_FW_IN_XIP && QSPI_BOOT
+    default 0x400000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x40680000 if SYS_LS_PPA_FW_IN_XIP && QSPI_BOOT
+    default 0x680000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+endif
+endif
+
+choice
+    prompt "COMe-LS1046A: Memory Configuration"
+    default COMELS1046A_MEM_4G
+
+config COMELS1046A_MEM_4G
+    bool "4GB variant COMe-LS1046A"
+
+config COMELS1046A_MEM_8G
+    bool "8GB variant COMe-LS1046A"
+
+endchoice
+
+#############################################################################
+# COMe-LS1046A/Ritec
+#############################################################################
+
+if CARRIER_RITEC
+
+choice
+    prompt "COMe-LS1046A"
+    default COME1046A_TFA
+
+config COME1046A_TFA
+       bool "TFA-boot"
+       select CONFIG_ARM
+       select CONFIG_TARGET_COMELS1046A
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_TFABOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_PHYS_64BIT
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+       select CONFIG_SPL_FAT_SUPPORT
+
+endchoice
+
+endif # CARRIER_RITEC

@@ -509,6 +509,30 @@ config MPC83XX_SPISEL_BOOT
 
 	  This pin is typically used as spi chip select to a spi nor flash.
 
+config NXP_QORIQ_GPIO
+    bool "NXP QorIQ GPIO driver"
+    depends on DM_GPIO && OF_CONTROL
+    help
+      This driver supports the built-in GPIO controller of QorIQ CPUs.
+      Each GPIO bank is identified by its own entry in the device tree,
+      i.e.
+
+        gpio1: gpio@2300000 {
+            compatible = "fsl,qoriq-gpio";
+            reg = <0x0 0x2300000 0x0 0x10000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+            little-endian;
+        };
+
+      By default, each bank is assumed to have 32 GPIOs, but the ngpios
+      setting is honored, so the number of GPIOs for each bank is
+      configurable to match the actual GPIO count of the SoC.
+
+      Aside from the standard functions of input/output mode, and output
+      value setting, the open-drain feature, which can configure individual
+      GPIOs to work as open-drain outputs, is supported.
+
 config MT7620_GPIO
 	bool "MediaTek MT7620 GPIO driver"
 	depends on DM_GPIO && SOC_MT7620
@@ -555,5 +579,12 @@ config SL28CPLD_GPIO
 	depends on DM_GPIO && SL28CPLD
 	help
 	  Support GPIO access on Kontron sl28cpld board management controllers.
+
+#config FXL6408_GPIO
+#    bool "FXL6408 I2C GPIO expander"
+#    depends on DM_GPIO && OF_CONTROL
+#    help
+#      This option enables support for 8 GPIOs found
+#      on the Fairchild Semiconductor FXL6408.
 
 endif

@@ -217,6 +217,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 			value = 0;
 			break;
 		case GPIOC_TOGGLE:
+		    gpio_direction_input(gpio);
 			value = gpio_get_value(gpio);
 			if (!IS_ERR_VALUE(value))
 				value = !value;
@@ -225,6 +226,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 			goto show_usage;
 		}
 		gpio_direction_output(gpio, value);
+		gpio_set_value(gpio, value);
 	}
 	printf("gpio: pin %s (gpio %u) value is ", str_gpio, gpio);
 

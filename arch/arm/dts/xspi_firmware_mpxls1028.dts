@@ -1,0 +1,28 @@
+/*
+ * Automatic software update for U-Boot
+ * Make sure the flashing addresses ('load' prop) is correct for your board!
+ */
+
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+    #size-cells = <1>;
+
+	binman {
+		filename = "./xspi_firmware.img";
+		pad-byte = <0xff>;
+		rcw {
+			filename = "./bl2_flexspi_nor.pbl";
+			offset = <0x0>;
+		};
+		uboot_xspi {
+			filename = "./fip_uboot.bin";
+			offset = <0x100000>;
+		};
+		dp {
+			filename = "./ls1028a-dp-fw.bin";
+			offset = <0x940000>;
+		};
+	};
+};

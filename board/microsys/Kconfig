@@ -1,0 +1,1505 @@
+# Configuration for MicroSys boards
+
+config PCI_BOOTDELAY
+	default 1000
+
+config NFSBOOTCOMMAND
+	default ""
+
+config RAMBOOTCOMMAND
+	default ""
+
+config SYS_I2C_EEPROM_NXID_MAC
+	default 10
+
+config SYS_SCSI_MAX_DEVICE
+	default 1
+
+config LOADADDR
+	default 0xa0000000
+
+config SYS_FSL_MMC_HAS_CAPBLT_VS33
+	default ""
+
+menu "MicroSys"
+
+config SYS_VENDOR
+       string "Vendor"
+       default "microsys"
+
+config SYS_SOC
+       string "SOC"
+       default "fsl-layerscape"
+
+choice
+    prompt "Carrier Board CRX"
+    default CARRIER_CRX05
+
+config CARRIER_CRX05
+    bool "CRX05 Carrier Board"
+
+config CARRIER_CRX06
+    bool "CRX06 Carrier Board"
+
+config CARRIER_CRX07
+    bool "CRX07 Carrier Board"
+
+config CARRIER_CRX08
+    bool "CRX08 Carrier Board"
+
+config CARRIER_RITEC
+    bool "Ritec Carrier Board for COMe-LS1046A"
+
+endchoice
+
+config TFABOOT_SOURCE_SD_MMC
+    bool
+    help
+      "TFA Boot Source: SD"
+
+config TFABOOT_SOURCE_SD_MMC2
+    bool
+    help
+      "TFA Boot Source: SD2"
+
+config TFABOOT_SOURCE_QSPI
+    bool
+    help
+      "TFA Boot Source: QSPI"
+
+if TARGET_MPXLS1043
+
+config SYS_BOARD
+       string "Board"
+       default "mpxls1043"
+
+config SYS_CONFIG_NAME
+       string "Name"
+       default "mpxls1043"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "fsl-mpxls1043"
+
+config RCW_VERSION
+    string "Version of RCW compiled in"
+    default "SD"
+
+if FSL_LS_PPA
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x60400000 if SYS_LS_PPA_FW_IN_XIP
+    default 0x400000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x60680000 if SYS_LS_PPA_FW_IN_XIP
+    default 0x680000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+endif
+endif
+
+if CARRIER_CRX05
+
+choice
+    prompt "MPXLS1043: Reset Configuration Word"
+    default MPXLS1043A2_1000MHz_RCW_MSATA_SDCARD
+
+config MPXLS1043A2_1000MHz_RCW_PCIE_SDCARD
+       bool "A2-1000MHz: RCW for PCIE and SD-card"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1000MHz_RCW_PCIE_NAND
+       bool "A2-1000MHz: RCW for PCIE and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+
+config MPXLS1043A2_1000MHz_RCW_MSATA_NAND
+       bool "A2-1000MHz: RCW for MSATA and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1000MHz_RCW_MSATA_SDCARD
+       bool "A2-1000MHz: RCW for MSATA and SD-CARD"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+# MPXLS1043-A2 1600MHz Extended Temperature
+
+config MPXLS1043A2_1600MHz_RCW_PCIE_SDCARD
+       bool "A2-1600MHz: RCW for PCIE and SD-card"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1600MHz_RCW_PCIE_NAND
+       bool "A2-1600MHz: RCW for PCIE and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+
+config MPXLS1043A2_1600MHz_RCW_MSATA_NAND
+       bool "A2-1600MHz: RCW for MSATA and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1600MHz_RCW_MSATA_SDCARD
+       bool "A2-1600MHz: RCW for MSATA and SD-CARD"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+endchoice
+
+endif
+
+endif
+
+if TARGET_MPXLS1043_2NAND
+
+config SYS_BOARD
+       string "Board"
+       default "mpxls1043_2nand"
+
+config SYS_CONFIG_NAME
+       string "Name"
+       default "mpxls1043_2nand"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "fsl-mpxls1043"
+
+config RCW_VERSION
+    string "Version of RCW compiled in"
+    default "SD"
+
+if FSL_LS_PPA
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x60400000 if SYS_LS_PPA_FW_IN_XIP
+    default 0x400000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x60680000 if SYS_LS_PPA_FW_IN_XIP
+    default 0x680000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+endif
+endif
+
+if CARRIER_CRX05
+
+choice
+    prompt "MPXLS1043: Reset Configuration Word"
+    default MPXLS1043A2_1000MHz_RCW_MSATA_SDCARD
+
+config MPXLS1043A2_1000MHz_RCW_PCIE_SDCARD
+       bool "A2-1000MHz: RCW for PCIE and SD-card"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1000MHz_RCW_PCIE_NAND
+       bool "A2-1000MHz: RCW for PCIE and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+
+config MPXLS1043A2_1000MHz_RCW_MSATA_NAND
+       bool "A2-1000MHz: RCW for MSATA and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1000MHz_RCW_MSATA_SDCARD
+       bool "A2-1000MHz: RCW for MSATA and SD-CARD"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1000MHz
+         with the following parameters:
+           C1000
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+# MPXLS1043-A2 1600MHz Extended Temperature
+
+config MPXLS1043A2_1600MHz_RCW_PCIE_SDCARD
+       bool "A2-1600MHz: RCW for PCIE and SD-card"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1600MHz_RCW_PCIE_NAND
+       bool "A2-1600MHz: RCW for PCIE and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3355
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+
+config MPXLS1043A2_1600MHz_RCW_MSATA_NAND
+       bool "A2-1600MHz: RCW for MSATA and NAND"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+
+config MPXLS1043A2_1600MHz_RCW_MSATA_SDCARD
+       bool "A2-1600MHz: RCW for MSATA and SD-CARD"
+       help
+         Selects Reset Configuration Word for MPXLS1043A2-1600MHz
+         with the following parameters:
+           C1600
+           D1600
+           P300
+           3358
+           SDC
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_USB
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_DM_SPI
+       select CONFIG_USB
+       select CONFIG_USB_XHCI_HCD
+       select CONFIG_USB_XHCI_DWC3
+       select CONFIG_USB_STORAGE
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+endchoice
+
+endif
+
+endif
+
+#############################################################################
+# MPXLS1046
+#############################################################################
+
+if TARGET_MPXLS1046
+
+config SYS_BOARD
+       string "Board"
+       default "mpxls1046"
+
+config SYS_CONFIG_NAME
+       string "Name"
+       default "mpxls1046"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "fsl-mpxls1046"
+
+config RCW_VERSION
+    string "Version of RCW compiled in"
+    default "SD"
+
+if FSL_LS_PPA
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x40400000 if SYS_LS_PPA_FW_IN_XIP && QSPI_BOOT
+    default 0x400000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x40680000 if SYS_LS_PPA_FW_IN_XIP && QSPI_BOOT
+    default 0x680000 if SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND
+endif
+endif
+
+choice
+    prompt "MPXLS1046: Memory Configuration"
+    default MPXLS1046_MEM_2G
+
+config MPXLS1046_MEM_2G
+    bool "2GB variant"
+
+config MPXLS1046_MEM_4G
+    bool "4GB variant"
+
+config MPXLS1046_MEM_8G
+    bool "8GB variant"
+
+endchoice
+
+#############################################################################
+# MPXLS1046/CRX05
+#############################################################################
+
+if CARRIER_CRX05
+
+choice
+    prompt "MPXLS1046: Reset Configuration Word"
+    default MPX1046_CRX05_2GB_RCW_SDCARD
+
+config MPX1046_CRX05_2GB_RCW_SDCARD
+       bool "RCW for SD-card"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+
+config MPX1046_RCW_QSPI
+       bool "RCW for QSPI"
+       select CONFIG_ARM
+       select CONFIG_TARGET_MPXLS1046
+       select CONFIG_DM_SPI
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_QSPI_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+
+config MPX1046_CRX05_2GB_RCW_NAND
+       bool "RCW for NAND"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+
+config MPX1046_CRX05_4GB_RCW_SDCARD
+       bool "1600 MHz 4GB RAM RCW for SD-card"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_MPXLS1046_MEM_4G
+
+config MPX1046_CRX05_4GB_RCW_NAND
+       bool "1600 MHz 4GB RAM RCW for NAND"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_NAND_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+
+endchoice
+
+endif
+
+#############################################################################
+# MPXLS1046/CRX06
+#############################################################################
+
+if CARRIER_CRX06
+
+choice
+    prompt "MPXLS1046: Reset Configuration Word"
+    default MPX1046_RCW_SDCARD_2XXFI
+
+config MPX1046_RCW_SDCARD_2XXFI
+       bool "RCW for SD-card with 2xXFI"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_PHYS_64BIT
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+       select CONFIG_SPL_FAT_SUPPORT
+
+config MPX1046_RCW_SDCARD_QSGMII
+       bool "RCW for SD-card with QSGMII"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_PHYS_64BIT
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+       select CONFIG_SPL_FAT_SUPPORT
+
+config MPX1046_RCW_SDCARD_4XSGMII
+       bool "RCW for SD-card with 4xSGMII"
+       select CONFIG_DM_SPI
+       select CONFIG_SPL
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_SD_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_PHYS_64BIT
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+       select CONFIG_SPL_FAT_SUPPORT
+
+config MPX1046_RCW_QSPI_2XXFI
+       bool "RCW for QSPI with 2xXFI"
+       select CONFIG_ARM
+       select CONFIG_TARGET_MPXLS1046
+       select CONFIG_DM_SPI
+       select CONFIG_FIT
+       select CONFIG_FIT_VERBOSE
+       select CONFIG_OF_BOARD_SETUP
+       select CONFIG_QSPI_BOOT
+       select CONFIG_HUSH_PARSER
+       select CONFIG_CMD_MMC
+       select CONFIG_CMD_SF
+       select CONFIG_CMD_SPI
+       select CONFIG_CMD_I2C
+       select CONFIG_CMD_DHCP
+       select CONFIG_CMD_MII
+       select CONFIG_CMD_PING
+       select CONFIG_CMD_CACHE
+       select CONFIG_CMD_EXT2
+       select CONFIG_CMD_EXT4
+       select CONFIG_CMD_FAT
+       select CONFIG_OF_CONTROL
+       select CONFIG_DM
+       select CONFIG_SPI_FLASH
+       select CONFIG_SYS_NS16550
+       select CONFIG_FSL_QSPI
+       select CONFIG_PCI
+       select CONFIG_DM_PCI
+       select CONFIG_DM_PCI_COMPAT
+       select CONFIG_PCIE_LAYERSCAPE
+       select CONFIG_NETDEVICES
+       select CONFIG_E1000
+       select CONFIG_SPI_FLASH_SPANSION
+       select CONFIG_SPI_FLASH_STMICRO
+       select CONFIG_DM_SPI_FLASH
+       select CONFIG_SPI_FLASH_MTD
+
+endchoice
+
+endif
+
+endif
+
+if TARGET_COMELS1046A
+source "board/microsys/Kconfig-comels1046a"
+endif
+
+#############################################################################
+# MPXLS1088
+#############################################################################
+
+if TARGET_MPXLS1088
+
+config SYS_BOARD
+       string "Board"
+       default "mpxls1088"
+
+config SYS_CONFIG_NAME
+       string "Name"
+       default "mpxls1088"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "mpxls1088"
+
+config RCW_VERSION
+    string "Version of RCW compiled in"
+    default "SD"
+
+if SYS_LS_PPA_FW_IN_XIP
+
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x20400000
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x20680000
+endif # CHAIN_OF_TRUST
+
+endif # SYS_LS_PPA_FW_IN_XIP
+
+if (SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND)
+
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x400000
+
+if CHAIN_OF_TRUST
+config SYS_LS_PPA_ESBC_ADDR
+    hex "PPA Firmware HDR Addr"
+    default 0x680000
+endif # CHAIN_OF_TRUST
+
+endif # (SYS_LS_PPA_FW_IN_MMC || SYS_LS_PPA_FW_IN_NAND)
+
+#############################################################################
+# MPXLS1088/CRX05
+#############################################################################
+
+if CARRIER_CRX05
+
+choice
+    prompt "MPXLS1088: Reset Configuration Word"
+    default MPX1088_RCW_SDCARD_CRX05
+
+config MPX1088_RCW_SDCARD_CRX05
+       bool "RCW for SD-card/CRX05"
+       select ARCH_LS1088A
+       select ARM64
+       select SCSI
+       select CMD_SCSI
+       select SD_BOOT
+
+config MPX1088_RCW_QSPI_CRX05
+       bool "RCW for QSPI/CRX05"
+       select ARCH_LS1088A
+       select ARM64
+       select ARCH_MISC_INIT
+       select BOARD_LATE_INIT
+       select SCSI
+       select CMD_SCSI
+       select QSPI_BOOT
+
+endchoice
+
+endif # CARRIER_CRX05
+
+#############################################################################
+# MPXLS1088/CRX06
+#############################################################################
+
+if CARRIER_CRX06
+
+choice
+    prompt "MPXLS1088: Reset Configuration Word"
+    default MPX1088_RCW_SDCARD_CRX06_2QSGMII
+
+config MPX1088_RCW_SDCARD_CRX06_2QSGMII
+       bool "RCW for SD-card/CRX06/2xQSGMII"
+       select ARCH_LS1088A
+       select ARM64
+       select SCSI
+       select CMD_SCSI
+       select SD_BOOT
+
+config MPX1088_RCW_SDCARD_CRX06_2TSN
+       bool "RCW for SD-card/CRX06/2xTSN"
+       select ARCH_LS1088A
+       select ARM64
+       select SCSI
+       select CMD_SCSI
+       select SD_BOOT
+
+endchoice
+
+source "board/freescale/common/Kconfig"
+
+endif # CARRIER_CRX06
+
+endif # TARGET_MPXLS1088
+
+#############################################################################
+# MPXLS1028
+#############################################################################
+
+if TARGET_MPXLS1028
+
+config SYS_BOARD
+    default "mpxls1028"
+
+config SYS_VENDOR
+    default "microsys"
+
+config SYS_SOC
+    default "fsl-layerscape"
+
+config SYS_CONFIG_NAME
+    default "mpxls1028"
+
+config DEFAULT_DEVICE_TREE
+       string "Default Device Tree"
+       default "mpxls1028"
+
+config EMU
+    bool "Emulator Support"
+    default n
+
+config EMU_PXP
+    bool "Emulator (PXP) Support"
+    depends on EMU
+    default n
+
+config EMU_CFP
+    bool "Emulator (CFP) Support"
+    depends on EMU
+    default n
+
+config EMU_DDR
+    bool "Emulator (DDR) Support"
+    depends on EMU
+    default n
+
+config EMMC_BOOT
+    bool "Support for booting from EMMC"
+    default n
+
+config SYS_TEXT_BASE
+    default 0x96000000 if SD_BOOT || EMMC_BOOT
+    default 0x82000000 if TFABOOT
+    default 0x20100000
+
+if FSL_LS_PPA
+
+config SYS_LS_PPA_FW_ADDR
+    hex "PPA Firmware Addr"
+    default 0x20400000 if SYS_LS_PPA_FW_IN_XIP && ARCH_LS1028A
+    default 0x400000 if SYS_LS_PPA_FW_IN_MMC && ARCH_LS1028A
+endif
+
+#############################################################################
+# MPXLS1028/CRX07
+#############################################################################
+
+if CARRIER_CRX07
+
+choice
+    prompt "MPXLS1028: U-Boot"
+    default MPX1028_RCW_SDCARD_CRX07
+
+config MPX1028_RCW_SDCARD_CRX07
+       bool "U-Boot for SD-card/CRX07"
+       select SCSI
+       select CMD_SCSI
+       select SD_BOOT
+       imply NETDEVICES
+
+config MPX1028_RCW_EMMC_CRX07
+       bool "U-Boot for EMMC/CRX07"
+       select SCSI
+       select CMD_SCSI
+       select EMMC_BOOT
+       imply NETDEVICES
+
+config MPX1028_RCW_TFA_SD_CRX07
+       bool "U-Boot for TFA/SD/CRX07"
+       select SCSI
+       select CMD_SCSI
+       select TFABOOT
+       select TFABOOT_SOURCE_SD_MMC
+       select ENV_IS_IN_EEPROM
+       imply NETDEVICES
+
+config MPX1028_RCW_TFA_SD2_CRX07
+       bool "U-Boot for TFA/eMMC/CRX07"
+       select SCSI
+       select CMD_SCSI
+       select TFABOOT
+       select TFABOOT_SOURCE_SD_MMC2
+       select ENV_IS_IN_EEPROM
+       imply NETDEVICES
+
+endchoice
+
+choice
+    prompt "MPXLS1028: Memory Configuration"
+    default MPXLS1028_MEM_2G
+
+config MPXLS1028_MEM_2G
+    bool "2GB variant"
+
+config MPXLS1028_MEM_4G
+    bool "4GB variant"
+
+endchoice
+
+endif
+
+source "board/freescale/common/Kconfig"
+
+endif
+
+if TARGET_MPXLX2160A
+source "board/microsys/mpxlx2160a/Kconfig"
+endif
+
+endmenu

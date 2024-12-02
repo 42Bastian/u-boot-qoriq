@@ -1,0 +1,98 @@
+/*
+ * Device Tree Include file for Freescale Layerscape-1043A family SoC.
+ *
+ * Copyright (C) 2015, Freescale Semiconductor
+ *
+ * Mingkai Hu <Mingkai.hu@freescale.com>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2.  This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+/dts-v1/;
+/include/ "fsl-ls1043a.dtsi"
+
+/ {
+	model = "MPXLS1043 Board";
+
+        aliases {
+		spi0 = &qspi;
+        };
+
+};
+
+&qspi {
+	bus-num = <0>;
+	status = "okay";
+
+	qflash0: n25q128a11@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <50000000>;
+		reg = <0>;
+	};
+};
+
+&i2c0 {
+    status = "okay";
+    u-boot,dm-pre-reloc;
+
+    tmp451: temp@4c {
+        compatible = "ti,tmp451";
+        reg = <0x4c>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    rx8581: rtc@32 {
+		compatible = "epson,rx8581";
+		reg = <0x32>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    at24c128: eeprom@54 {
+        compatible = "atmel,24c128";
+        reg = <0x50>;
+        u-boot,i2c-offset-len = <2>; /* two address bytes */
+        write-page-size = <64>;
+        page-write-delay = <5000>; /* 5ms delay when writing */
+        max-speed = <400000>;
+    };
+
+   eeprom@57 {
+	compatible = "at24,24c128";
+	reg = <0x57>;
+		u-boot,i2c-offset-len = <2>; /* two address bytes */
+           write-page-size = <64>;
+           page-write-delay = <5000>; /* 5ms delay when writing */
+        max-speed = <400000>;
+};
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&ifc {
+	status = "okay";
+	#address-cells = <2>;
+	#size-cells = <1>;
+	/* NAND Flashes on board */
+	ranges = <0x1 0x0 0x0 0x7e800000 0x00010000>;
+
+		nand@1,0 {
+			compatible = "fsl,ifc-nand";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			reg = <0x1 0x0 0x10000>;
+		};
+};
+
+&duart0 {
+	status = "okay";
+};
+
+&duart1 {
+	status = "okay";
+};

@@ -366,6 +366,12 @@ config SYS_TEXT_BASE
 	default 0x2a000000 if MACH_SUN9I
 	default 0x42e00000 if MACH_SUN8I_V3S
 	default 0x4a000000 if ARCH_SUNXI
+	default 0x82000000 if (TARGET_MPXLS1046 || COMELS1046A) && (SD_BOOT || NAND_BOOT)
+	default 0x40100000 if (TARGET_MPXLS1046 || COMELS1046A) && QSPI_BOOT
+	default 0x82000000 if TARGET_MPXLS1043 && (SD_BOOT || NAND_BOOT)
+	default 0x40100000 if TARGET_MPXLS1043 && QSPI_BOOT
+	default 0x80400000 if TARGET_MPXLS1088 && (SD_BOOT || NAND_BOOT)
+	default 0x20100000 if TARGET_MPXLS1088 && QSPI_BOOT
 	hex "Text Base"
 	help
 	  The address in memory that U-Boot will be running from, initially.

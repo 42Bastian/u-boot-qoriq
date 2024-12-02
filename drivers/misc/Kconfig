@@ -421,6 +421,12 @@ config SPL_I2C_EEPROM
 	  This option is an SPL-variant of the I2C_EEPROM option.
 	  See the help of I2C_EEPROM for details.
 
+config TUSB8041
+    bool "Enable driver for TUSB8041 USB Hub on I2C-bus"
+    depends on MISC
+    help
+      Allows access to TUSB8041 via SMBus/I2C interface.
+
 config SYS_I2C_EEPROM_ADDR
 	hex "Chip address of the EEPROM device"
 	depends on ID_EEPROM || I2C_EEPROM || SPL_I2C_EEPROM || CMD_EEPROM || ENV_IS_IN_EEPROM

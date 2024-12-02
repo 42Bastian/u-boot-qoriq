@@ -1,0 +1,224 @@
+// SPDX-License-Identifier: GPL-2.0+ OR X11
+/*
+ * MicroSys MPXLS1028 device tree
+ *
+ * Copyright 2018 NXP
+ * Copyright (C) 2019-2021 MicroSys Electronics GmbH
+ */
+
+/dts-v1/;
+
+#include "fsl-ls1028a.dtsi"
+
+/ {
+	model = "MicroSys MPXLS1028/CRX07";
+	compatible = "fsl,ls1028a-rdb", "fsl,ls1028a";
+	aliases {
+		spi0 = &fspi;
+	};
+
+      leds {
+          compatible = "gpio-leds";
+          ld1 {
+              label = "ld1";
+              gpios = <&gpio1 7 0>;
+              default-state = "off";
+          };
+          ld2 {
+              label = "ld2";
+              gpios = <&gpio1 6 0>;
+              default-state = "off";
+          };
+      };
+};
+
+&fspi {
+	bus-num = <0>;
+	status = "okay";
+
+	// 16MB NOR
+	qflash0: n25q128a@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor","spi-flash";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+		fspi-rx-bus-width = <1>;
+        fspi-tx-bus-width = <1>;
+	 };
+
+	// 512MB NAND
+	nand0: tc58@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "spi-nand";
+		spi-max-frequency = <20000000>;
+		reg = <1>;
+        fspi-rx-bus-width = <1>;
+        fspi-tx-bus-width = <1>;
+	 };
+};
+
+&enetc_mdio_pf3 {
+
+    netc_sgmii0: ethernet-phy@0 {
+        reg = <0>;
+    };
+
+    netc_rgmii0: ethernet-phy@1 {
+        reg = <1>;
+    };
+
+    sw_qsgmii0: ethernet-phy@4 {
+        reg = <4>;
+    };
+
+    sw_qsgmii1: ethernet-phy@5 {
+        reg = <5>;
+    };
+
+    sw_qsgmii2: ethernet-phy@6 {
+        reg = <6>;
+    };
+
+    sw_qsgmii3: ethernet-phy@7 {
+        reg = <7>;
+    };
+};
+
+&enetc_port0 {
+    status = "okay";
+    phy-mode = "sgmii";
+    phy-handle = <&netc_sgmii0>;
+};
+
+&enetc_port1 {
+    status = "okay";
+    phy-mode = "rgmii";
+    phy-handle = <&netc_rgmii0>;
+};
+
+&enetc_port2 {
+	status = "okay";
+};
+
+&mscc_felix {
+	status = "okay";
+};
+
+&mscc_felix_port0 {
+	label = "swp0";
+    status = "okay";
+    phy-mode = "qsgmii";
+    phy-handle = <&sw_qsgmii0>;
+};
+
+&mscc_felix_port1 {
+	label = "swp1";
+	phy-mode = "qsgmii";
+    phy-handle = <&sw_qsgmii1>;
+	status = "okay";
+};
+
+&mscc_felix_port2 {
+	label = "swp2";
+	phy-mode = "qsgmii";
+    phy-handle = <&sw_qsgmii2>;
+	status = "okay";
+};
+
+&mscc_felix_port3 {
+	label = "swp3";
+	phy-mode = "qsgmii";
+    phy-handle = <&sw_qsgmii3>;
+	status = "okay";
+};
+
+&mscc_felix_port4 {
+	status = "okay";
+	ethernet = <&enetc_port2>;
+};
+
+&sata {
+	status = "okay";
+};
+
+&esdhc {
+	status = "okay";
+};
+
+&esdhc1 {
+	status = "okay";
+};
+
+&usb0 {
+	status = "okay";
+};
+
+&usb1 {
+	status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+    u-boot,dm-pre-reloc;
+
+    fxl6408: gpio@43 {
+        compatible = "fcs,fxl6408";
+        reg = <0x43>;
+        direction = [00];
+        input-default-state = [1f];
+        pull-config = [00 1f];
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    tmp451: temp@4c {
+        compatible = "ti,tmp451";
+        reg = <0x4c>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    pcf85063: rtc@51 {
+        compatible = "nxp,pcf85063";
+        reg = <0x51>;
+        u-boot,i2c-offset-len = <1>; /* one address byte */
+    };
+
+    at24c128: eeprom@54 {
+        compatible = "atmel,24c128";
+        reg = <0x54>;
+        u-boot,i2c-offset-len = <2>; /* two address bytes */
+        write-page-size = <64>;
+        page-write-delay = <5000>; /* 5ms delay when writing */
+        max-speed = <400000>;
+    };
+
+};
+
+&gpio1 {
+    status = "disabled";
+};
+
+&gpio2 {
+    status = "okay";
+};
+
+&gpio3 {
+    status = "disabled";
+};
+
+&can0 {
+	status = "okay";
+};
+
+&can1 {
+	status = "okay";
+};
+
+&pcie1 {
+	status = "okay";
+};
+
+&pcie2 {
+	status = "okay";
+};

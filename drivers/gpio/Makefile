@@ -11,6 +11,7 @@ endif
 obj-$(CONFIG_$(SPL_TPL_)DM_GPIO) += gpio-uclass.o
 
 obj-$(CONFIG_$(SPL_)DM_PCA953X)	+= pca953x_gpio.o
+obj-$(CONFIG_DM_74X164)		+= 74x164_gpio.o
 
 obj-$(CONFIG_AT91_GPIO)	+= at91_gpio.o
 obj-$(CONFIG_ATMEL_PIO4)	+= atmel_pio4.o
@@ -66,6 +67,8 @@ obj-$(CONFIG_$(SPL_TPL_)PM8916_GPIO)	+= pm8916_gpio.o
 obj-$(CONFIG_MT7620_GPIO)	+= mt7620_gpio.o
 obj-$(CONFIG_MT7621_GPIO)	+= mt7621_gpio.o
 obj-$(CONFIG_MSCC_SGPIO)	+= mscc_sgpio.o
+obj-$(CONFIG_NXP_QORIQ_GPIO)	+= nxp_qoriq_gpio.o
 obj-$(CONFIG_NX_GPIO)		+= nx_gpio.o
 obj-$(CONFIG_SIFIVE_GPIO)	+= sifive-gpio.o
 obj-$(CONFIG_ADP5585_GPIO)	+= adp5585_gpio.o
+#obj-$(CONFIG_FXL6408_GPIO)	+= fxl6408_gpio.o

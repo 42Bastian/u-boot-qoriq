@@ -1980,6 +1980,90 @@ config TARGET_THUNDERX_88XX
 	select PL01X_SERIAL
 	select SYS_CACHE_SHIFT_7
 
+config TARGET_MPXLS1043
+	bool "Support mpxls1043"
+	select ARCH_LS1043A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select BOARD_LATE_INIT
+	select SUPPORT_SPL
+	select BOARD_EARLY_INIT_F
+    select ARCH_SUPPORT_TFABOOT
+	help
+	  Support for MicroSys MPXLS1043 platform.
+
+config TARGET_MPXLS1043_2NAND
+	bool "Support mpxls1043 2nand"
+	select ARCH_LS1043A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select BOARD_LATE_INIT
+	select SUPPORT_SPL
+	select BOARD_EARLY_INIT_F
+    select ARCH_SUPPORT_TFABOOT
+	help
+	  Support for MicroSys MPXLS1043 2NAND platform.
+
+config TARGET_MPXLS1046
+	bool "Support mpxls1046"
+	select ARCH_LS1046A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select SUPPORT_SPL
+	select FSL_DDR_BIST
+	select FSL_DDR_INTERACTIVE if !SPL
+	select DM_SPI_FLASH if DM_SPI
+    select ARCH_SUPPORT_TFABOOT
+	imply SCSI
+	help
+	  Support for MicroSys MPXLS1046 platform.
+
+config TARGET_COMELS1046A
+    bool "Support come-ls1046a"
+    select ARCH_LS1046A
+    select ARM64
+    select ARMV8_MULTIENTRY
+    select DM_SPI_FLASH if DM_SPI
+    select ARCH_SUPPORT_TFABOOT
+    imply SCSI
+    help
+      Support for MicroSys COMe-LS1046A platform.
+
+config TARGET_MPXLS1088
+	bool "Support mpxls1088"
+	select ARCH_LS1088A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select ARCH_MISC_INIT
+	select BOARD_LATE_INIT
+	select SUPPORT_SPL
+    select ARCH_SUPPORT_TFABOOT
+	help
+	  Support for MicroSys MPXLS1088 platform.
+
+config TARGET_MPXLS1028
+	bool "Support mpxls1028"
+	select ARCH_LS1028A
+	select ARM64
+	select ARMV8_MULTIENTRY
+	select BOARD_LATE_INIT
+    select ARCH_SUPPORT_TFABOOT
+	help
+	  Support for MicroSys MPXLS1028 platform
+
+config TARGET_MPXLX2160A
+    bool "Support mpxlx2160a"
+    select ARCH_LX2160A
+    select ARCH_MISC_INIT
+    select ARM64
+    select ARMV8_MULTIENTRY
+    select ARCH_SUPPORT_TFABOOT
+    select BOARD_LATE_INIT
+    help
+      Support for MicroSys' MPXLX2160A platform.
+      The mpxlx2160a is a high-performance development platform that supports the
+      QorIQ LX2160A Layerscape Architecture processor.
+
 config ARCH_ASPEED
 	bool "Support Aspeed SoCs"
 	select DM

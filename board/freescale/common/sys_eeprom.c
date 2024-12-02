@@ -15,6 +15,10 @@
 #include <linux/delay.h>
 #include <u-boot/crc.h>
 
+#ifdef CONFIG_DM_I2C
+#include <i2c_eeprom.h>
+#endif
+
 #ifdef CONFIG_SYS_I2C_EEPROM_CCID
 #include "../common/eeprom.h"
 #define MAX_NUM_PORTS	8
@@ -23,6 +27,9 @@
 #ifdef CONFIG_SYS_I2C_EEPROM_NXID
 /* some boards with non-256-bytes EEPROM have special define */
 /* for MAX_NUM_PORTS in board-specific file */
+#ifdef CONFIG_SYS_I2C_EEPROM_NXID_MAC
+#define MAX_NUM_PORTS CONFIG_SYS_I2C_EEPROM_NXID_MAC
+#endif
 #ifndef MAX_NUM_PORTS
 #define MAX_NUM_PORTS	16
 #endif
@@ -182,7 +189,7 @@ static int read_eeprom(void)
 				      CONFIG_SYS_I2C_EEPROM_ADDR_LEN, &dev);
 #endif
 	if (!ret)
-		ret = dm_i2c_read(dev, 0, (void *)&e, sizeof(e));
+		ret = i2c_eeprom_read(dev, 0, (void *)&e, sizeof(e));
 #endif
 
 #ifdef CONFIG_SYS_EEPROM_BUS_NUM
@@ -190,6 +197,13 @@ static int read_eeprom(void)
 	i2c_set_bus_num(bus);
 #endif
 #endif
+
+	/*
+	 * Check if SN and Errata field are defined. If not set the length of
+	 * the string to 0.
+	 */
+	if (e.sn[0] == 0xff) e.sn[0] = 0;
+	if (e.errata[0] == 0xff) e.errata[0] = 0;
 
 #ifdef DEBUG
 	show_eeprom();
@@ -254,6 +268,9 @@ static int prog_eeprom(void)
 		ret = i2c_write(CONFIG_SYS_I2C_EEPROM_ADDR, i,
 				CONFIG_SYS_I2C_EEPROM_ADDR_LEN,
 				p, min((int)(sizeof(e) - i), 8));
+		if (ret)
+			break;
+		udelay(5000);	/* 5ms write cycle timing */
 #else
 		struct udevice *dev;
 #ifdef CONFIG_SYS_EEPROM_BUS_NUM
@@ -267,8 +284,7 @@ static int prog_eeprom(void)
 					      &dev);
 #endif
 		if (!ret)
-			ret = dm_i2c_write(dev, i, p, min((int)(sizeof(e) - i),
-							  8));
+			ret = i2c_eeprom_write(dev, i, p, min((int)(sizeof(e) - i), 8));
 #endif
 		if (ret)
 			break;
@@ -296,7 +312,7 @@ static int prog_eeprom(void)
 					      &dev);
 #endif
 		if (!ret)
-			ret = dm_i2c_read(dev, 0, (void *)&e2, sizeof(e2));
+			ret = i2c_eeprom_read(dev, 0, (void *)&e2, sizeof(e2));
 #endif
 		if (!ret && memcmp(&e, &e2, sizeof(e)))
 			ret = -1;
@@ -514,6 +530,10 @@ int mac_read_from_eeprom(void)
 	if (crc != be32_to_cpu(*crcp)) {
 		printf("CRC mismatch (%08x != %08x)\n", crc, be32_to_cpu(e.crc));
 		return 0;
+	}
+
+	if (!env_get("serial#")) {
+        env_set("serial#", (char*) e.sn);
 	}
 
 #ifdef CONFIG_SYS_I2C_EEPROM_NXID

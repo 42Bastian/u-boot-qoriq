@@ -16,6 +16,54 @@ int gen10g_shutdown(struct phy_device *phydev)
 	return 0;
 }
 
+
+static int gen10g_mmd_dev_read_link_status(struct phy_device *phydev, int devad, int offset)
+{
+	const int reg = phy_read(phydev, devad, MDIO_STAT1+offset);
+	return (reg >= 0) && ((reg&BIT(2)) != 0);
+}
+
+static int gen10g_mmd_dev_startup(struct phy_device *phydev, int devad, int offset)
+{
+	int link;
+	int ctl = 0;
+	int count;
+
+	if (SPEED_1000 == phydev->speed)
+		ctl |= BMCR_SPEED1000;
+	else if (SPEED_100 == phydev->speed)
+		ctl |= BMCR_SPEED100;
+	else if (SPEED_10000 == phydev->speed) {
+		ctl |= (1<<6)|(1<<13);
+		ctl &= ~(0xf<<2);
+	}
+	else if (SPEED_2500 == phydev->speed) {
+		ctl |= (1<<6)|(1<<13);
+		ctl &= ~(0xf<<2);
+		ctl |= (0x6<<2);
+	}
+	else if (SPEED_5000 == phydev->speed) {
+		ctl |= (1<<6)|(1<<13);
+		ctl &= ~(0xf<<2);
+		ctl |= (0x7<<2);
+	}
+
+	ctl |= BIT(15);
+
+	phy_write(phydev, devad, MDIO_CTRL1+offset, ctl);
+
+	count = 100;
+	gen10g_mmd_dev_read_link_status(phydev, devad, offset);
+	do {
+		link = gen10g_mmd_dev_read_link_status(phydev, devad, offset);
+		if (!link) udelay(500*1000);
+	} while (  !link // link is up?
+			&& (--count > 0)
+	);
+
+	return 0;
+}
+
 int gen10g_startup(struct phy_device *phydev)
 {
 	int devad, reg;
@@ -27,6 +75,18 @@ int gen10g_startup(struct phy_device *phydev)
 	phydev->speed = SPEED_10000;
 	phydev->duplex = DUPLEX_FULL;
 
+	phydev->pause = phydev->asym_pause = 0;
+
+	gen10g_mmd_dev_startup(phydev, MDIO_MMD_PMAPMD, 0);
+
+#ifdef CONFIG_CARRIER_CRX06
+	/* Only CRX06 rev1:
+	 * The H unit of the PHYs is not connected rather than it
+	 * is present. Skip it because it will never show up a link.
+	 */
+	mmd_mask &= ~BIT(MDIO_MMD_PHYXS);
+#endif
+
 	/*
 	 * Go through all the link-reporting devices, and make sure
 	 * they're all up and happy
@@ -37,8 +97,22 @@ int gen10g_startup(struct phy_device *phydev)
 
 		/* Read twice because link state is latched and a
 		 * read moves the current state into the register */
-		phy_read(phydev, devad, MDIO_STAT1);
-		reg = phy_read(phydev, devad, MDIO_STAT1);
+#if defined(CONFIG_CARRIER_CRX08) || defined(CONFIG_CARRIER_CRX06)
+		if ((devad == 4) && (
+			(phydev->interface == PHY_INTERFACE_MODE_USXGMII) ||
+			(phydev->interface == PHY_INTERFACE_MODE_XGMII) ||
+			(phydev->interface == PHY_INTERFACE_MODE_XFI) ))
+		{
+			// The PCS for 10GBASE-R (XFI/XGMII/USXGMII is + $1000)
+			phy_read(phydev, devad, MDIO_STAT1+0x1000);
+			reg = phy_read(phydev, devad, MDIO_STAT1+0x1000);
+		} else
+#endif
+		{
+			phy_read(phydev, devad, MDIO_STAT1);
+			reg = phy_read(phydev, devad, MDIO_STAT1);
+		}
+
 		if (reg < 0 || !(reg & MDIO_STAT1_LSTATUS))
 			phydev->link = 0;
 	}
@@ -52,7 +126,7 @@ int gen10g_discover_mmds(struct phy_device *phydev)
 
 	/* Assume PHY must have at least one of PMA/PMD, WIS, PCS, PHY
 	 * XS or DTE XS; give up if none is present. */
-	for (mmd = 1; mmd <= 5; mmd++) {
+	for (mmd = MDIO_MMD_PMAPMD; mmd <= MDIO_MMD_DTEXS; mmd++) {
 		/* Is this MMD present? */
 		stat2 = phy_read(phydev, mmd, MDIO_STAT2);
 		if (stat2 < 0 ||
